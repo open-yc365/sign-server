@@ -22,7 +22,13 @@ The default port is 8080.
 ### 4、Build the Docker Image
 Build the Docker image locally:
 ```bash
-docker build -t sign-server .
+docker build -t local/sign-server:latest sign-server .
+```
+
+### 5、Start service
+Using Docker Compose to Start Services:
+```bash
+docker compose -f docker-compose.yml up -d
 ```
 
 ### Notes
