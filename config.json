@@ -1,0 +1,7 @@
+{
+  "rootpath": "/sign",
+  "port": 8080,
+  "allowed_ips": [
+    "127.0.0.1"
+  ]
+}
