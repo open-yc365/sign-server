@@ -1,0 +1,37 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+    paths-ignore:
+      - '**.md'
+    
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'build-docker')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+      
+      - name: Extract repository name
+        run: echo "REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+      
+      - name: Set Docker image tag
+        run: echo "IMAGE_TAG=0.0.1" >> $GITHUB_ENV
+      
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/$GITHUB_REPOSITORY:$IMAGE_TAG .
+          docker tag ghcr.io/$GITHUB_REPOSITORY:$IMAGE_TAG ghcr.io/$GITHUB_REPOSITORY:latest
+      
+      - name: Push Docker image to GHCR
+        run: |
+          docker push ghcr.io/$GITHUB_REPOSITORY:$IMAGE_TAG
+          docker push ghcr.io/$GITHUB_REPOSITORY:latest
