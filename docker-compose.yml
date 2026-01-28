@@ -1,0 +1,17 @@
+
+networks:
+  default:
+    name: bridge-sign-service
+
+services:
+  sign-server:
+    container_name: sign-service
+    image: local/sign-server:latest
+    restart: always
+    volumes:
+      - ./.env:/app/.env
+      - ./config.json:/app/config.json
+    command:
+      sh -c "/app/sign-server"
+    ports:
+      - "8080:8080"
